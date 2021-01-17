@@ -582,6 +582,7 @@ body {
   background-position: center;
   background-size: 60%;
   background-repeat: no-repeat;
+  border: none;
 }
 
 .wrapper__block-main-tasks-item-check {
@@ -663,7 +664,7 @@ body {
   height: 30px;
   font-size: .8em;
   padding: 5px;
-  border: 1px solid #000;
+  border: 1px solid #B0B0B0;
   border-radius: 3px;
 }
 
@@ -676,15 +677,11 @@ body {
   border: none;
   color: #fff;
   cursor: pointer;
-  background: -webkit-gradient(linear, left top, left bottom, from(#7988FF), to(#9FAAFF));
-  background: -o-linear-gradient(top, #7988FF, #9FAAFF);
-  background: linear-gradient(to bottom, #7988FF, #9FAAFF);
+  background: #8694FF;
 }
 
 .form-btn-cancel {
-  background: -webkit-gradient(linear, left top, left bottom, from(#C84951), to(#C88589));
-  background: -o-linear-gradient(top, #C84951, #C88589);
-  background: linear-gradient(to bottom, #C84951, #C88589);
+  background: #C8545C;
 }
 
 .show-flex {
@@ -699,4 +696,9 @@ body {
 
 .hide {
   display: none;
+}
+
+.done-task {
+  -webkit-text-decoration: line-through #7988FF;
+          text-decoration: line-through #7988FF;
 }

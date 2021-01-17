@@ -7,6 +7,11 @@ const todoList = () => {
     createColumnsBlock();
   }
 
+  Array.prototype.removeEl = function(idx) {
+    delete this[idx];
+    return this.filter(item => item);
+  }
+
   const addColumns = () => {
     const btn = document.querySelector('.wrapper__block-btn');
     const column_name = document.querySelector('.wrapper__block-column-name');
@@ -21,10 +26,12 @@ const todoList = () => {
         }      
 
         columns.push(column);
+
         createColumnsBlock();
         saveInLocalStorage('columns', JSON.stringify(columns));
         addTasks();
         showFormAddTasks();
+        doneTask();
       }
     });
   
@@ -38,17 +45,14 @@ const todoList = () => {
 
     btns.forEach((btn, index) => {
       btn.addEventListener('click', () => {
-        Array.prototype.removeEl = function(idx) {
-          delete this[idx];
-          return this.filter(item => item);
-        }
-
         columns = columns.removeEl(index);
+        
         createColumnsBlock();
         saveInLocalStorage('columns', JSON.stringify(columns));
         addTasks();
         showFormAddTasks();
         removeColumns();
+        doneTask();
       });
     });
   }
@@ -72,13 +76,16 @@ const todoList = () => {
           const task = {
             title: val_task,
             date: `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`,
-            check: false
+            check: false,
+            id: Math.ceil(Date.now()) + index * 1.5
           }
 
           columns[index].tasks.push(task);
           createTasksBlock();
           total_tasks[index].innerText = setSizeTasks(index);
           saveInLocalStorage('columns', JSON.stringify(columns));
+
+          doneTask();
 
           form_add_tasks[index].classList.add('hide');
         }
@@ -89,6 +96,45 @@ const todoList = () => {
       });
     });
   }
+
+  function doneTask() {
+    const checkbox = document.querySelectorAll(`.wrapper__block-main-tasks-item label input`);
+    const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
+
+    tasks.forEach((task, index) => {
+      task.addEventListener('click', () => {
+        if (checkbox[index].checked) {
+          task.classList.add('done-task');
+
+          columns.map((column, index_column) => {
+            const nums = checkbox[index].id.match(/\d+/g);
+
+            column.tasks.map((task, index_task) => {
+              if (index_column === +nums[0] && index_task === +nums[1]) {
+                task.check = true;
+              }
+            });
+          });
+        } else {
+          task.classList.remove('done-task');
+
+          columns.map((column, index_column) => {
+            const nums = checkbox[index].id.match(/\d+/g);
+
+            column.tasks.map((task, index_task) => {
+              if (index_column === +nums[0] && index_task === +nums[1]) {
+                task.check = false;
+              }
+            });
+          });
+        }
+
+        saveInLocalStorage('columns', JSON.stringify(columns));
+      });
+    });
+  } 
+
+  doneTask();
 
   function createColumnsBlock() {
     const list = document.querySelector('.wrapper__blocks');
@@ -135,9 +181,9 @@ const todoList = () => {
     columns.map((column, idx) => {
       column.tasks.map((task, index) => {
         const block = `
-        <li class="wrapper__block-main-tasks-item">
-          <label for="checkbox-${idx}-${index + 1}">
-            <input type="checkbox" id="checkbox-${idx}-${index + 1}" />
+        <li class="wrapper__block-main-tasks-item ${task.check ? 'done-task' : ''}" data-column="${idx}" data-num-task="${index}">
+          <label for="checkbox-${idx}-${index}">
+            <input type="checkbox" id="checkbox-${idx}-${index}" ${task.check ? 'checked' : ''} />
             <span class="wrapper__block-main-tasks-item-check"></span>
             <div class="wrapper__block-main-tasks-item-name">${task.title}</div>
             <div class="wrapper__block-main-tasks-item-date">${task.date}</div>
