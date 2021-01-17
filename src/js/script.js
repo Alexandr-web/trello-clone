@@ -23,43 +23,72 @@ const todoList = () => {
         columns.push(column);
         createColumnsBlock();
         saveInLocalStorage('columns', JSON.stringify(columns));
+        addTasks();
+        showFormAddTasks();
       }
     });
-
-    const addTasks = () => {
-      const columns_block = document.querySelectorAll('.wrapper__block');
-      const btns = document.querySelectorAll('.wrapper__block-form-task-btn');
-      const tasks_name = document.querySelectorAll('.wrapper__block-form-task-name');
-      const form_add_tasks = document.querySelectorAll('.wrapper__block-form');
-      const total_tasks = document.querySelectorAll('.wrapper__block-footer-total-tasks');
-
-      columns_block.forEach((column, index) => {
-        btns[index].addEventListener('click', () => {
-          const val_task = tasks_name[index].value;
-          const date = new Date();
-
-          if (val_task.length > 2) {
-            const task = {
-              title: val_task,
-              date: `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`,
-              check: false
-            }
-
-            columns[index].tasks.push(task);
-            createTasksBlock();
-            total_tasks[index].innerText = setSizeTasks(index);
-            saveInLocalStorage('columns', JSON.stringify(columns));
-
-            form_add_tasks[index].classList.add('hide');
-          }
-        });
-      });
-    }
   
     addTasks();
   }
   
   addColumns();
+
+  const removeColumns = () => {
+    const btns = document.querySelectorAll('.wrapper__block-header-remove');
+
+    btns.forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        Array.prototype.removeEl = function(idx) {
+          delete this[idx];
+          return this.filter(item => item);
+        }
+
+        columns = columns.removeEl(index);
+        createColumnsBlock();
+        saveInLocalStorage('columns', JSON.stringify(columns));
+        addTasks();
+        showFormAddTasks();
+        removeColumns();
+      });
+    });
+  }
+
+  removeColumns();
+
+  function addTasks() {
+    const columns_block = document.querySelectorAll('.wrapper__block');
+    const add_btns = document.querySelectorAll('.wrapper__block-form-task-btn[data-form-btn="add"]');
+    const cancel_btns = document.querySelectorAll('.wrapper__block-form-task-btn[data-form-btn="cancel"]');
+    const tasks_name = document.querySelectorAll('.wrapper__block-form-task-name');
+    const form_add_tasks = document.querySelectorAll('.wrapper__block-form');
+    const total_tasks = document.querySelectorAll('.wrapper__block-footer-total-tasks');
+
+    columns_block.forEach((column, index) => {
+      add_btns[index].addEventListener('click', function() {
+        const val_task = tasks_name[index].value;
+        const date = new Date();
+
+        if (val_task.length > 2) {
+          const task = {
+            title: val_task,
+            date: `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`,
+            check: false
+          }
+
+          columns[index].tasks.push(task);
+          createTasksBlock();
+          total_tasks[index].innerText = setSizeTasks(index);
+          saveInLocalStorage('columns', JSON.stringify(columns));
+
+          form_add_tasks[index].classList.add('hide');
+        }
+      });
+
+      cancel_btns[index].addEventListener('click', () => {
+        form_add_tasks[index].classList.add('hide');
+      });
+    });
+  }
 
   function createColumnsBlock() {
     const list = document.querySelector('.wrapper__blocks');
@@ -86,7 +115,8 @@ const todoList = () => {
         </footer>
         <div class="wrapper__block-form hide">
           <input class="wrapper__block-form-task-name form-text" type="text" placeholder="Название задачи">
-          <button class="wrapper__block-form-task-btn form-btn">Добавить задачу</button>
+          <button class="wrapper__block-form-task-btn form-btn" data-form-btn="add">Добавить задачу</button>
+          <button class="wrapper__block-form-task-btn form-btn form-btn-cancel" data-form-btn="cancel">Отмена</button>
         </div>
       </div>
       `;

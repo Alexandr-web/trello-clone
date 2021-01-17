@@ -442,8 +442,8 @@ body {
   margin: auto 0;
   left: 0;
   width: 100%;
-  height: 120px;
-  background-color: #fff;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   border-radius: 3px;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
@@ -458,6 +458,15 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  z-index: 99;
+}
+
+.wrapper__block-form-task-btn:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.wrapper__block-form-task-name {
+  border: none !important;
 }
 
 .wrapper__block-add-column {
@@ -654,6 +663,8 @@ body {
   height: 30px;
   font-size: .8em;
   padding: 5px;
+  border: 1px solid #000;
+  border-radius: 3px;
 }
 
 .form-btn {
@@ -668,6 +679,12 @@ body {
   background: -webkit-gradient(linear, left top, left bottom, from(#7988FF), to(#9FAAFF));
   background: -o-linear-gradient(top, #7988FF, #9FAAFF);
   background: linear-gradient(to bottom, #7988FF, #9FAAFF);
+}
+
+.form-btn-cancel {
+  background: -webkit-gradient(linear, left top, left bottom, from(#C84951), to(#C88589));
+  background: -o-linear-gradient(top, #C84951, #C88589);
+  background: linear-gradient(to bottom, #C84951, #C88589);
 }
 
 .show-flex {
