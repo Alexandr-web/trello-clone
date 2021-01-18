@@ -416,8 +416,8 @@ body {
 }
 
 .wrapper__block {
-  width: 270px;
-  height: 400px;
+  width: 370px;
+  height: 470px;
   border-radius: 3px;
   background-color: #fff;
   position: relative;
@@ -426,7 +426,7 @@ body {
   transition: .4s;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 50px 300px 50px;
+  grid-template-rows: 50px 350px 50px;
 }
 
 .wrapper__block-form {
@@ -541,8 +541,11 @@ body {
 }
 
 .wrapper__block-main-tasks {
+  -webkit-box-shadow: inset 0 0 15px #c2c2c2;
+          box-shadow: inset 0 0 15px #c2c2c2;
   height: 100%;
-  padding: 0 10px;
+  padding: 10px;
+  border-radius: 3px;
   overflow: auto;
   display: -webkit-box;
   display: -ms-flexbox;
