@@ -82,6 +82,7 @@ const todoList = () => {
           saveInLocalStorage('columns', JSON.stringify(columns));
           doneTask();
           dragAndDrop();
+          removeTasks();
         }
       });
 
@@ -124,6 +125,45 @@ const todoList = () => {
 
   doneTask();
 
+  function removeTasks() {
+    const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
+    const btns = document.querySelectorAll('.wrapper__block-main-tasks-item-date-remove-task-btn');
+    const dates = document.querySelectorAll('.wrapper__block-main-tasks-item-date-text');
+
+    const showBtnRemove = () => {
+      tasks.forEach((task, index_task) => {
+        task.addEventListener('mouseenter', () => {
+          btns[index_task].classList.remove('hide');
+          dates[index_task].classList.add('hide');
+        });
+  
+        task.addEventListener('mouseleave', () => {
+          btns[index_task].classList.add('hide');
+          dates[index_task].classList.remove('hide');
+        });
+      });
+    }
+
+    showBtnRemove();
+
+    columns.map((column, index_column) => {
+      const buttons = document.querySelectorAll(`.wrapper__block-main-tasks-item-date-remove-task-btn[data-column="${index_column}"]`);
+
+      buttons.forEach((btn, index_btn) => {
+        btn.addEventListener('click', () => {
+          const column_num = +btn.dataset.column;
+
+          columns[column_num].tasks = columns[column_num].tasks.removeEl(index_btn);
+
+          saveInLocalStorage('columns', JSON.stringify(columns));
+          executeAllControlFunctions();
+        });
+      });
+    });
+  }
+
+  removeTasks();
+
   function createColumnsBlock() {
     const list = document.querySelector('.wrapper__blocks');
 
@@ -160,6 +200,7 @@ const todoList = () => {
 
     createTasksBlock();
     dragAndDrop();
+    removeTasks();
   }
 
   function createTasksBlock() {
@@ -175,7 +216,10 @@ const todoList = () => {
             <input type="checkbox" id="checkbox-${idx}-${index}" ${task.check ? 'checked' : ''} />
             <span class="wrapper__block-main-tasks-item-check"></span>
             <div class="wrapper__block-main-tasks-item-name">${task.title}</div>
-            <div class="wrapper__block-main-tasks-item-date">${task.date}</div>
+            <div class="wrapper__block-main-tasks-item-date">
+              <button class="wrapper__block-main-tasks-item-date-remove-task-btn hide" data-column="${idx}"></button>
+              <span class="wrapper__block-main-tasks-item-date-text">${task.date}</span>
+            </div>
           </label>
         </li>
         `;
@@ -192,8 +236,8 @@ const todoList = () => {
     tasks.forEach(task => {
       task.draggable = true;
       
-      task.addEventListener('dragstart', () => setTimeout(() => task.classList.add('hidden'), 0));
-      task.addEventListener('dragend', () => task.classList.remove('hidden'));
+      task.addEventListener('dragstart', () => setTimeout(() => task.classList.add('selected-task'), 0));
+      task.addEventListener('dragend', () => task.classList.remove('selected-task'));
     });
 
     list_task.forEach(list => {
@@ -202,7 +246,7 @@ const todoList = () => {
       }, false);
 
       list.addEventListener('drop', () => {
-        const el = document.querySelector('.hidden');
+        const el = document.querySelector('.selected-task');
 
         setInfoOfTasks(+list.dataset.listNum, el);
       
@@ -231,14 +275,16 @@ const todoList = () => {
         if (index_column === selected_task.column_num) {
           column.tasks.map((task, index_task) => {
             if (task.id === selected_task.id) {
-              selected_task.column_num = drop_zone_num;
-  
               const label = [...element.childNodes].find(item => item.nodeName === 'LABEL');
               const checkbox = [...label.childNodes].find(item => item.nodeName === 'INPUT');
+              const btn = document.querySelector(`.wrapper__block-main-tasks-item-date-remove-task-btn[data-column="${selected_task.column_num}"]`);
   
               label.setAttribute('for', `checkbox-${drop_zone_num}-${index_task}`);
               checkbox.setAttribute('id', `checkbox-${drop_zone_num}-${index_task}`);
+              btn.dataset.column = drop_zone_num;
   
+              selected_task.column_num = drop_zone_num;
+
               element.dataset.column = drop_zone_num;
               element.dataset.numTask = index_task;
   
@@ -289,6 +335,7 @@ const todoList = () => {
     addTasks();
     showFormAddTasks();
     removeColumns();
+    removeTasks();
     dragAndDrop();
     doneTask();
   }
