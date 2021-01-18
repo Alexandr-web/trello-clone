@@ -35,7 +35,7 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(45deg, #FCC4A2, #FABA93);
+  background: linear-gradient(45deg, #FBA165, #FBC844, #FBC11F);
 }
 
 h1,
@@ -62,7 +62,6 @@ h6 {
   }
   &__blocks {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
   }
@@ -155,6 +154,7 @@ h6 {
       min-height: 300px;
       padding: 10px;
       &-tasks {
+        min-height: inherit;
         display: flex;
         flex-direction: column;
         &-item {
@@ -280,4 +280,12 @@ h6 {
 
 .done-task {
   text-decoration: line-through #7988FF;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.active-column {
+  box-shadow: inset 0 -5px 5px 0 #c2c2c2;
 }

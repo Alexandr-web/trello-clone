@@ -7,8 +7,8 @@ const todoList = () => {
     createColumnsBlock();
   }
 
-  Array.prototype.removeEl = function(idx) {
-    delete this[idx];
+  Array.prototype.removeEl = function(index) {
+    delete this[index];
     return this.filter(item => item);
   }
 
@@ -27,11 +27,8 @@ const todoList = () => {
 
         columns.push(column);
 
-        createColumnsBlock();
+        executeAllControlFunctions();
         saveInLocalStorage('columns', JSON.stringify(columns));
-        addTasks();
-        showFormAddTasks();
-        doneTask();
       }
     });
   
@@ -46,13 +43,9 @@ const todoList = () => {
     btns.forEach((btn, index) => {
       btn.addEventListener('click', () => {
         columns = columns.removeEl(index);
-        
-        createColumnsBlock();
+
+        executeAllControlFunctions();
         saveInLocalStorage('columns', JSON.stringify(columns));
-        addTasks();
-        showFormAddTasks();
-        removeColumns();
-        doneTask();
       });
     });
   }
@@ -68,7 +61,7 @@ const todoList = () => {
     const total_tasks = document.querySelectorAll('.wrapper__block-footer-total-tasks');
 
     columns_block.forEach((column, index) => {
-      add_btns[index].addEventListener('click', function() {
+      add_btns[index].addEventListener('click', () => {
         const val_task = tasks_name[index].value;
         const date = new Date();
 
@@ -77,36 +70,33 @@ const todoList = () => {
             title: val_task,
             date: `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`,
             check: false,
-            id: Math.ceil(Date.now()) + index * 1.5
+            id: Math.ceil(Date.now()) + index * 1.5,
+            column_num: index
           }
 
           columns[index].tasks.push(task);
-          createTasksBlock();
           total_tasks[index].innerText = setSizeTasks(index);
-          saveInLocalStorage('columns', JSON.stringify(columns));
-
-          doneTask();
-
           form_add_tasks[index].classList.add('hide');
+
+          createTasksBlock();
+          saveInLocalStorage('columns', JSON.stringify(columns));
+          doneTask();
+          dragAndDrop();
         }
       });
 
-      cancel_btns[index].addEventListener('click', () => {
-        form_add_tasks[index].classList.add('hide');
-      });
+      cancel_btns[index].addEventListener('click', () => form_add_tasks[index].classList.add('hide'));
     });
   }
 
   function doneTask() {
-    const checkbox = document.querySelectorAll(`.wrapper__block-main-tasks-item label input`);
+    const checkbox = document.querySelectorAll('.wrapper__block-main-tasks-item label input');
     const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
 
     tasks.forEach((task, index) => {
       task.addEventListener('click', () => {
-        if (checkbox[index].checked) {
-          task.classList.add('done-task');
-
-          columns.map((column, index_column) => {
+        columns.map((column, index_column) => {
+          if (checkbox[index].checked) {
             const nums = checkbox[index].id.match(/\d+/g);
 
             column.tasks.map((task, index_task) => {
@@ -114,11 +104,8 @@ const todoList = () => {
                 task.check = true;
               }
             });
-          });
-        } else {
-          task.classList.remove('done-task');
-
-          columns.map((column, index_column) => {
+            task.classList.add('done-task');
+          } else {
             const nums = checkbox[index].id.match(/\d+/g);
 
             column.tasks.map((task, index_task) => {
@@ -126,8 +113,9 @@ const todoList = () => {
                 task.check = false;
               }
             });
-          });
-        }
+            task.classList.remove('done-task');
+          }
+        });
 
         saveInLocalStorage('columns', JSON.stringify(columns));
       });
@@ -149,7 +137,7 @@ const todoList = () => {
           <button class="wrapper__block-header-remove"></button>
         </header>
         <main class="wrapper__block-main">
-          <ul class="wrapper__block-main-tasks"></ul>
+          <ul class="wrapper__block-main-tasks" data-list-num="${index}"></ul>
         </main>
         <footer class="wrapper__block-footer">
           <div class="wrapper__block-footer-total-tasks">
@@ -171,6 +159,7 @@ const todoList = () => {
     });
 
     createTasksBlock();
+    dragAndDrop();
   }
 
   function createTasksBlock() {
@@ -194,6 +183,74 @@ const todoList = () => {
         lists[idx].innerHTML += block;
       });
     });
+  }
+
+  function dragAndDrop() {
+    const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
+    const list_task = document.querySelectorAll('.wrapper__block-main-tasks');
+
+    tasks.forEach(task => {
+      task.draggable = true;
+      
+      task.addEventListener('dragstart', () => setTimeout(() => task.classList.add('hidden'), 0));
+      task.addEventListener('dragend', () => task.classList.remove('hidden'));
+    });
+
+    list_task.forEach(list => {
+      list.addEventListener('dragover', e => {
+        e.preventDefault();
+      }, false);
+
+      list.addEventListener('drop', () => {
+        const el = document.querySelector('.hidden');
+
+        setInfoOfTasks(+list.dataset.listNum, el);
+      
+        list.append(el);
+
+        createColumnsBlock();
+        doneTask();
+        executeAllControlFunctions();
+      });
+    });
+  }
+
+  dragAndDrop();
+
+  function setInfoOfTasks(drop_zone_num, element) {
+    if (element) {
+      const el = columns[+element.dataset.column].tasks[+element.dataset.numTask];
+    
+      columns.map((column, index_column) => {
+        if (!column.tasks.find(task => task.id === el.id)) {
+          return;
+        }
+        
+        const selected_task = column.tasks.find(task => task.id === el.id);
+  
+        if (index_column === selected_task.column_num) {
+          column.tasks.map((task, index_task) => {
+            if (task.id === selected_task.id) {
+              selected_task.column_num = drop_zone_num;
+  
+              const label = [...element.childNodes].find(item => item.nodeName === 'LABEL');
+              const checkbox = [...label.childNodes].find(item => item.nodeName === 'INPUT');
+  
+              label.setAttribute('for', `checkbox-${drop_zone_num}-${index_task}`);
+              checkbox.setAttribute('id', `checkbox-${drop_zone_num}-${index_task}`);
+  
+              element.dataset.column = drop_zone_num;
+              element.dataset.numTask = index_task;
+  
+              column.tasks = column.tasks.removeEl(index_task);
+              columns[drop_zone_num].tasks.push(selected_task);
+            }
+          });
+        }
+      });
+  
+      saveInLocalStorage('columns', JSON.stringify(columns));
+    }
   }
 
   function setSizeTasks(num) {
@@ -222,14 +279,19 @@ const todoList = () => {
     const form_add_tasks = document.querySelectorAll('.wrapper__block-form');
     const btns_open_form = document.querySelectorAll('.wrapper__block-footer-add-new-task-btn');
 
-    btns_open_form.forEach((btn, index) => {
-      btn.addEventListener('click', () => {
-        form_add_tasks[index].classList.remove('hide');
-      });
-    });
+    btns_open_form.forEach((btn, index) => btn.addEventListener('click', () => form_add_tasks[index].classList.remove('hide')));
   }
 
   showFormAddTasks();
+
+  function executeAllControlFunctions() {
+    createColumnsBlock();
+    addTasks();
+    showFormAddTasks();
+    removeColumns();
+    dragAndDrop();
+    doneTask();
+  }
 }
 
 todoList();

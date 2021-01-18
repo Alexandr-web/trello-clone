@@ -383,8 +383,8 @@ h6 {
 
 body {
   min-height: 100vh;
-  background: -o-linear-gradient(45deg, #FCC4A2, #FABA93);
-  background: linear-gradient(45deg, #FCC4A2, #FABA93);
+  background: -o-linear-gradient(45deg, #FBA165, #FBC844, #FBC11F);
+  background: linear-gradient(45deg, #FBA165, #FBC844, #FBC11F);
 }
 
 .container {
@@ -410,9 +410,6 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   gap: 20px;
@@ -551,6 +548,7 @@ body {
 }
 
 .wrapper__block-main-tasks {
+  min-height: inherit;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -701,4 +699,13 @@ body {
 .done-task {
   -webkit-text-decoration: line-through #7988FF;
           text-decoration: line-through #7988FF;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.active-column {
+  -webkit-box-shadow: inset 0 -5px 5px 0 #c2c2c2;
+          box-shadow: inset 0 -5px 5px 0 #c2c2c2;
 }
