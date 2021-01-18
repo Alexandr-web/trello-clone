@@ -200,7 +200,6 @@ const todoList = () => {
 
     createTasksBlock();
     dragAndDrop();
-    removeTasks();
   }
 
   function createTasksBlock() {
