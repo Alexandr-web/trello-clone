@@ -27,8 +27,8 @@ const todoList = () => {
 
         columns.push(column);
 
-        executeAllControlFunctions();
         saveInLocalStorage('columns', JSON.stringify(columns));
+        executeAllControlFunctions();
       }
     });
   
@@ -44,8 +44,8 @@ const todoList = () => {
       btn.addEventListener('click', () => {
         columns = columns.removeEl(index);
 
-        executeAllControlFunctions();
         saveInLocalStorage('columns', JSON.stringify(columns));
+        executeAllControlFunctions();
       });
     });
   }
@@ -78,11 +78,8 @@ const todoList = () => {
           total_tasks[index].innerText = setSizeTasks(index);
           form_add_tasks[index].classList.add('hide');
 
-          createTasksBlock();
           saveInLocalStorage('columns', JSON.stringify(columns));
-          doneTask();
-          dragAndDrop();
-          removeTasks();
+          executeAllControlFunctions();
         }
       });
 
@@ -91,34 +88,37 @@ const todoList = () => {
   }
 
   function doneTask() {
-    const checkbox = document.querySelectorAll('.wrapper__block-main-tasks-item label input');
-    const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
+    columns.map((column, index_column) => {
+      const checkbox = document.querySelectorAll(`.wrapper__block-main-tasks-item-checkbox[data-column="${index_column}"]`);
+      const tasks = document.querySelectorAll(`.wrapper__block-main-tasks-item[data-column="${index_column}"]`);
+      const names_tasks = document.querySelectorAll(`.wrapper__block-main-tasks-item-name[data-column="${index_column}"]`);
 
-    tasks.forEach((task, index) => {
-      task.addEventListener('click', () => {
-        columns.map((column, index_column) => {
-          if (checkbox[index].checked) {
-            const nums = checkbox[index].id.match(/\d+/g);
+      tasks.forEach((task, index_task) => {
+        task.addEventListener('click', () => {
+          if (checkbox[index_task].checked) {
+            const nums = checkbox[index_task].id.match(/\d+/g);
 
             column.tasks.map((task, index_task) => {
               if (index_column === +nums[0] && index_task === +nums[1]) {
                 task.check = true;
+
+                names_tasks[index_task].classList.add('done-task');
               }
             });
-            task.classList.add('done-task');
           } else {
-            const nums = checkbox[index].id.match(/\d+/g);
+            const nums = checkbox[index_task].id.match(/\d+/g);
 
             column.tasks.map((task, index_task) => {
               if (index_column === +nums[0] && index_task === +nums[1]) {
                 task.check = false;
+
+                names_tasks[index_task].classList.remove('done-task');
               }
             });
-            task.classList.remove('done-task');
           }
-        });
 
-        saveInLocalStorage('columns', JSON.stringify(columns));
+          saveInLocalStorage('columns', JSON.stringify(columns));
+        });
       });
     });
   } 
@@ -127,24 +127,27 @@ const todoList = () => {
 
   function removeTasks() {
     const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
-    const btns = document.querySelectorAll('.wrapper__block-main-tasks-item-date-remove-task-btn');
+    const btns_remove_task = document.querySelectorAll('.wrapper__block-main-tasks-item-date-remove-task-btn');
+    const btns_change_task = document.querySelectorAll('.wrapper__block-main-tasks-item-date-change-task-btn');
     const dates = document.querySelectorAll('.wrapper__block-main-tasks-item-date-text');
 
-    const showBtnRemove = () => {
+    const showBtns = () => {
       tasks.forEach((task, index_task) => {
         task.addEventListener('mouseenter', () => {
-          btns[index_task].classList.remove('hide');
+          btns_remove_task[index_task].classList.remove('hide');
+          btns_change_task[index_task].classList.remove('hide');
           dates[index_task].classList.add('hide');
         });
   
         task.addEventListener('mouseleave', () => {
-          btns[index_task].classList.add('hide');
+          btns_remove_task[index_task].classList.add('hide');
+          btns_change_task[index_task].classList.add('hide');
           dates[index_task].classList.remove('hide');
         });
       });
     }
 
-    showBtnRemove();
+    showBtns();
 
     columns.map((column, index_column) => {
       const buttons = document.querySelectorAll(`.wrapper__block-main-tasks-item-date-remove-task-btn[data-column="${index_column}"]`);
@@ -163,6 +166,42 @@ const todoList = () => {
   }
 
   removeTasks();
+
+  function changeTextTasks() {
+    columns.map((column, index_column) => {
+      const btns = document.querySelectorAll(`.wrapper__block-main-tasks-item-date-change-task-btn[data-column="${index_column}"]`);
+      const inputs = document.querySelectorAll(`.wrapper__block-main-tasks-item-change-task-name[data-column="${index_column}"]`);
+      const names_tasks = document.querySelectorAll(`.wrapper__block-main-tasks-item-name[data-column="${index_column}"]`);
+  
+      let open = false;
+  
+      btns.forEach((btn, index_btn) => {
+        btn.addEventListener('click', () => {
+          const num_column = +btn.dataset.column;
+  
+          open = !open;
+  
+          [...btn.childNodes].find(item => item.nodeName === 'IMG').src = open ? './images/check.svg' : './images/pencil.svg';
+          [...btn.childNodes].find(item => item.nodeName === 'IMG').alt = open ? 'check' : 'pencil';
+  
+          inputs[index_btn].classList.toggle('hide');
+          names_tasks[index_btn].classList.toggle('hide');
+          btn.classList.toggle('blue-btn');
+  
+          columns[num_column].tasks[index_btn].title = inputs[index_btn].value;
+
+          doneTask();
+
+          if (!open) {
+            saveInLocalStorage('columns', JSON.stringify(columns));
+            executeAllControlFunctions();
+          }
+        }); 
+      });
+    });
+  }
+
+  changeTextTasks();
 
   function createColumnsBlock() {
     const list = document.querySelector('.wrapper__blocks');
@@ -199,7 +238,6 @@ const todoList = () => {
     });
 
     createTasksBlock();
-    dragAndDrop();
   }
 
   function createTasksBlock() {
@@ -210,13 +248,21 @@ const todoList = () => {
     columns.map((column, idx) => {
       column.tasks.map((task, index) => {
         const block = `
-        <li class="wrapper__block-main-tasks-item ${task.check ? 'done-task' : ''}" data-column="${idx}" data-num-task="${index}">
+        <li class="wrapper__block-main-tasks-item" data-column="${idx}" data-num-task="${index}">
           <label for="checkbox-${idx}-${index}">
-            <input type="checkbox" id="checkbox-${idx}-${index}" ${task.check ? 'checked' : ''} />
-            <span class="wrapper__block-main-tasks-item-check"></span>
-            <div class="wrapper__block-main-tasks-item-name">${task.title}</div>
-            <div class="wrapper__block-main-tasks-item-date">
+            <div class="wrapper__block-main-tasks-item-block">
+              <input class="wrapper__block-main-tasks-item-checkbox" type="checkbox" id="checkbox-${idx}-${index}" ${task.check ? 'checked' : ''} data-column="${idx}" />
+              <span class="wrapper__block-main-tasks-item-check"></span>
+            </div>
+            <div class="wrapper__block-main-tasks-item-block">
+              <div class="wrapper__block-main-tasks-item-name ${task.check ? 'done-task' : ''}" data-column="${idx}">${task.title}</div>
+              <input class="wrapper__block-main-tasks-item-change-task-name hide" type="text" value="${task.title}" placeholder="Введите название вашей задачи" data-column="${idx}" />
+            </div>
+            <div class="wrapper__block-main-tasks-item-block wrapper__block-main-tasks-item-date">
               <button class="wrapper__block-main-tasks-item-date-remove-task-btn hide" data-column="${idx}"></button>
+              <button class="wrapper__block-main-tasks-item-date-change-task-btn hide" data-column="${idx}">
+                <img src="./images/pencil.svg" alt="pencil" />
+              </button>
               <span class="wrapper__block-main-tasks-item-date-text">${task.date}</span>
             </div>
           </label>
@@ -246,13 +292,11 @@ const todoList = () => {
 
       list.addEventListener('drop', () => {
         const el = document.querySelector('.selected-task');
-
+        
         setInfoOfTasks(+list.dataset.listNum, el);
       
         list.append(el);
 
-        createColumnsBlock();
-        doneTask();
         executeAllControlFunctions();
       });
     });
@@ -275,12 +319,16 @@ const todoList = () => {
           column.tasks.map((task, index_task) => {
             if (task.id === selected_task.id) {
               const label = [...element.childNodes].find(item => item.nodeName === 'LABEL');
-              const checkbox = [...label.childNodes].find(item => item.nodeName === 'INPUT');
-              const btn = document.querySelector(`.wrapper__block-main-tasks-item-date-remove-task-btn[data-column="${selected_task.column_num}"]`);
-  
-              label.setAttribute('for', `checkbox-${drop_zone_num}-${index_task}`);
-              checkbox.setAttribute('id', `checkbox-${drop_zone_num}-${index_task}`);
-              btn.dataset.column = drop_zone_num;
+              const checkbox = document.querySelector(`.wrapper__block-main-tasks-item-checkbox[data-column="${selected_task.column_num}"]`);
+              const btn_remove_task = document.querySelector(`.wrapper__block-main-tasks-item-date-remove-task-btn[data-column="${selected_task.column_num}"]`);
+              const btn_change_task = document.querySelector(`.wrapper__block-main-tasks-item-date-change-task-btn[data-column="${selected_task.column_num}"]`);
+
+              label.for = `checkbox-${drop_zone_num}-${index_task}`;
+              checkbox.id = `checkbox-${drop_zone_num}-${index_task}`;
+              checkbox.dataset.column = drop_zone_num;
+
+              btn_remove_task.dataset.column = drop_zone_num;
+              btn_change_task.dataset.column = drop_zone_num;
   
               selected_task.column_num = drop_zone_num;
 
@@ -334,6 +382,7 @@ const todoList = () => {
     addTasks();
     showFormAddTasks();
     removeColumns();
+    changeTextTasks();
     removeTasks();
     dragAndDrop();
     doneTask();

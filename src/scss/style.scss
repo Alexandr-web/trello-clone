@@ -47,6 +47,11 @@ h6 {
   @extend %lato-900;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 .container {
   max-width: 1440px;
   margin: 0 auto;
@@ -171,8 +176,8 @@ h6 {
             margin-bottom: 20px;
           }
           label {
-            display: flex;
-            align-items: center;
+            display: grid;
+            grid-template-columns: .1fr 1fr .5fr;
             input[type="checkbox"] {
               display: none;
               &:checked + span {
@@ -195,15 +200,20 @@ h6 {
           &-name {
             color: #8290FF;
             font-size: .9em;
-            margin-left: 15px;
             display: block;
-            width: 165px;
-            padding-right: 10px;
+            padding: 0 10px;
+          }
+          &-change-task-name {
+            width: 100%;
+            height: auto;
+            border: 1px solid #c2c2c2;
+            padding: 8px;
+            border-radius: 4px;
           }
           &-date {
             display: flex;
             align-items: center;
-            margin-left: auto;
+            justify-content: flex-end;
             &-text {
               color: #8290FF;
               opacity: .8;
@@ -212,10 +222,11 @@ h6 {
             &-remove-task-btn {
               background: transparent;
               cursor: pointer;
-              width: 10px;
-              height: 10px;
+              width: 15px;
+              height: 15px;
               border: none;
               position: relative;
+              margin-right: 10px;
               &::after,
               &::before {
                 content: '';
@@ -237,6 +248,20 @@ h6 {
                 transform: rotateZ(-45deg);
               }
             }
+            &-change-task-btn {
+              width: 15px;
+              height: 15px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: none;
+              cursor: pointer;
+              background: transparent;
+            }
+          }
+          &-block {
+            display: flex;
+            align-items: center;
           }
         }
       }
@@ -337,4 +362,12 @@ h6 {
   box-shadow: inset 0 0 0 1px #7988FF;
   border-radius: 5px;
   padding: 10px;
+}
+
+.blue-btn {
+  background: #7988FF;
+  img {
+    width: 70%;
+    border-radius: 3px;
+  }
 }
