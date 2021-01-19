@@ -166,6 +166,8 @@ const todoList = () => {
             inputs[index_btn].classList.add('hide');
           }
         }
+
+        inputs[index_btn].focus();
       });
     });
   }
@@ -243,6 +245,8 @@ const todoList = () => {
             saveInLocalStorage('columns', JSON.stringify(columns));
             executeAllControlFunctions();
           }
+
+          inputs[index_btn].focus();
         }); 
       });
     });

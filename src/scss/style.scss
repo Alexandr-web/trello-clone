@@ -30,6 +30,8 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+$main-color: #6F81FF;
+
 *,
 *::after,
 *::before {
@@ -85,7 +87,6 @@ img {
   &__block {
     width: 370px;
     height: 470px;
-    border-radius: 3px;
     background-color: #fff;
     position: relative;
     transition: .4s;
@@ -134,7 +135,7 @@ img {
       background-color: #fff;
       &-title {
         font-size: .8em;
-        color: #6F81FF;
+        color: $main-color;
         opacity: .9;
       }
       &-change-column-text-btn {
@@ -164,7 +165,8 @@ img {
           right: 0;
           bottom: 0;
           margin: auto;
-          background-color: #808FFF;
+          background-color: $main-color;
+          opacity: .9;
           height: 2px;
           width: 100%;
         }
@@ -200,7 +202,7 @@ img {
         }
         &::-webkit-scrollbar-thumb {
           border-radius: 3px;
-          background-color: #7C96E1;
+          background-color: $main-color;
         }
         &-item {
           &:not(:last-child) {
@@ -212,7 +214,7 @@ img {
             input[type="checkbox"] {
               display: none;
               &:checked + span {
-                background: url(../images/check.svg) #97A3FF;
+                background: url(../images/check.svg) $main-color;
                 background-position: center;
                 background-size: 60%;
                 background-repeat: no-repeat;
@@ -229,25 +231,17 @@ img {
             cursor: pointer;
           }
           &-name {
-            color: #8290FF;
+            color: $main-color;
             font-size: .9em;
             display: block;
             padding: 0 10px;
-          }
-          &-change-task-name {
-            width: 100%;
-            height: auto;
-            border: 1px solid #c2c2c2;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 15px;
           }
           &-date {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             &-text {
-              color: #8290FF;
+              color: $main-color;
               opacity: .8;
               font-size: 14px;
             }
@@ -264,8 +258,8 @@ img {
                 content: '';
                 position: absolute;
                 width: 100%;
-                height: 1px; 
-                background-color: #808FFF;
+                height: 2px; 
+                background-color: $main-color;
                 opacity: .9;
                 top: 0;
                 left: 0;
@@ -308,14 +302,15 @@ img {
       @extend %lato-300;
       &-total-tasks {
         font-size: .9em;
-        color: #B3BBFF;
+        color: $main-color;
+        opacity: .8;
       }
       &-add-new-task-btn {
         border: none;
         background: transparent;
         cursor: pointer;
         text-transform: uppercase;
-        color: #919DFF;
+        color: $main-color;
         letter-spacing: .5px;
         font-size: .6em;
         position: relative;
@@ -330,7 +325,7 @@ img {
           margin: auto 0;
           width: 10px;
           height: 1px;
-          background-color: #7988FF;
+          background-color: $main-color;
         }
         &::after {
           transform: rotateZ(90deg);
@@ -359,7 +354,7 @@ img {
   border: none;
   color: #fff;
   cursor: pointer;
-  background: #8694FF;
+  background: $main-color;
 }
 
 @media (max-width: 410px) {
@@ -387,7 +382,7 @@ img {
 }
 
 .done-task {
-  text-decoration: line-through #7988FF;
+  text-decoration: line-through $main-color;
 }
 
 .hidden {
@@ -399,13 +394,13 @@ img {
 }
 
 .selected-task {
-  box-shadow: inset 0 0 0 1px #7988FF;
+  box-shadow: inset 0 0 0 1px $main-color;
   border-radius: 5px;
   padding: 10px;
 }
 
 .blue-btn {
-  background: #7988FF;
+  background: $main-color;
   img {
     width: 70%;
     border-radius: 3px;

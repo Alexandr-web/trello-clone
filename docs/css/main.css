@@ -432,7 +432,6 @@ img {
 .wrapper__block {
   width: 370px;
   height: 470px;
-  border-radius: 3px;
   background-color: #fff;
   position: relative;
   -webkit-transition: .4s;
@@ -545,7 +544,8 @@ img {
   right: 0;
   bottom: 0;
   margin: auto;
-  background-color: #808FFF;
+  background-color: #6F81FF;
+  opacity: .9;
   height: 2px;
   width: 100%;
 }
@@ -605,7 +605,7 @@ img {
 
 .wrapper__block-main-tasks::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background-color: #7C96E1;
+  background-color: #6F81FF;
 }
 
 .wrapper__block-main-tasks-item:not(:last-child) {
@@ -622,7 +622,7 @@ img {
 }
 
 .wrapper__block-main-tasks-item label input[type="checkbox"]:checked + span {
-  background: url(../images/check.svg) #97A3FF;
+  background: url(../images/check.svg) #6F81FF;
   background-position: center;
   background-size: 60%;
   background-repeat: no-repeat;
@@ -639,19 +639,10 @@ img {
 }
 
 .wrapper__block-main-tasks-item-name {
-  color: #8290FF;
+  color: #6F81FF;
   font-size: .9em;
   display: block;
   padding: 0 10px;
-}
-
-.wrapper__block-main-tasks-item-change-task-name {
-  width: 100%;
-  height: auto;
-  border: 1px solid #c2c2c2;
-  padding: 8px;
-  border-radius: 4px;
-  font-size: 15px;
 }
 
 .wrapper__block-main-tasks-item-date {
@@ -667,7 +658,7 @@ img {
 }
 
 .wrapper__block-main-tasks-item-date-text {
-  color: #8290FF;
+  color: #6F81FF;
   opacity: .8;
   font-size: 14px;
 }
@@ -686,8 +677,8 @@ img {
   content: '';
   position: absolute;
   width: 100%;
-  height: 1px;
-  background-color: #808FFF;
+  height: 2px;
+  background-color: #6F81FF;
   opacity: .9;
   top: 0;
   left: 0;
@@ -751,7 +742,8 @@ img {
 
 .wrapper__block-footer-total-tasks {
   font-size: .9em;
-  color: #B3BBFF;
+  color: #6F81FF;
+  opacity: .8;
 }
 
 .wrapper__block-footer-add-new-task-btn {
@@ -759,7 +751,7 @@ img {
   background: transparent;
   cursor: pointer;
   text-transform: uppercase;
-  color: #919DFF;
+  color: #6F81FF;
   letter-spacing: .5px;
   font-size: .6em;
   position: relative;
@@ -775,7 +767,7 @@ img {
   margin: auto 0;
   width: 10px;
   height: 1px;
-  background-color: #7988FF;
+  background-color: #6F81FF;
 }
 
 .wrapper__block-footer-add-new-task-btn::after {
@@ -803,7 +795,7 @@ img {
   border: none;
   color: #fff;
   cursor: pointer;
-  background: #8694FF;
+  background: #6F81FF;
 }
 
 @media (max-width: 410px) {
@@ -831,8 +823,8 @@ img {
 }
 
 .done-task {
-  -webkit-text-decoration: line-through #7988FF;
-          text-decoration: line-through #7988FF;
+  -webkit-text-decoration: line-through #6F81FF;
+          text-decoration: line-through #6F81FF;
 }
 
 .hidden {
@@ -845,14 +837,14 @@ img {
 }
 
 .selected-task {
-  -webkit-box-shadow: inset 0 0 0 1px #7988FF;
-          box-shadow: inset 0 0 0 1px #7988FF;
+  -webkit-box-shadow: inset 0 0 0 1px #6F81FF;
+          box-shadow: inset 0 0 0 1px #6F81FF;
   border-radius: 5px;
   padding: 10px;
 }
 
 .blue-btn {
-  background: #7988FF;
+  background: #6F81FF;
 }
 
 .blue-btn img {
