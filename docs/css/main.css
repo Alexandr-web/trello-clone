@@ -412,9 +412,13 @@ img {
 }
 
 .wrapper__blocks {
+  width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   gap: 20px;
@@ -483,6 +487,7 @@ img {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  margin: 0 auto;
 }
 
 .wrapper__block-header {
@@ -614,6 +619,7 @@ img {
   border: 1px solid #c2c2c2;
   padding: 8px;
   border-radius: 4px;
+  font-size: 15px;
 }
 
 .wrapper__block-main-tasks-item-date {
@@ -766,6 +772,12 @@ img {
   color: #fff;
   cursor: pointer;
   background: #8694FF;
+}
+
+@media (max-width: 410px) {
+  .wrapper__block {
+    width: 100%;
+  }
 }
 
 .form-btn-cancel {
