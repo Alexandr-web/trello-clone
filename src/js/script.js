@@ -125,6 +125,53 @@ const todoList = () => {
 
   doneTask();
 
+  function changeTextColumns() {
+    const settings_blocks = document.querySelectorAll('.wrapper__block-header-settings-column');
+    const columns_blocks = document.querySelectorAll('.wrapper__block');
+    const headings_columns = document.querySelectorAll('.wrapper__block-header-title');
+    const inputs = document.querySelectorAll('.wrapper__block-header-title-change-column');
+    const btns = document.querySelectorAll('.wrapper__block-header-change-column-text-btn');
+
+    const showElements = () => {
+      columns_blocks.forEach((column, index_column) => {
+        column.addEventListener('mouseenter', () => settings_blocks[index_column].classList.remove('hide'));
+        column.addEventListener('mouseleave', () => settings_blocks[index_column].classList.add('hide'));
+      });
+    }
+
+    showElements();
+
+    btns.forEach((btn, index_btn) => {
+      let open = false;
+
+      btn.addEventListener('click', () => {
+        open = !open;
+
+        headings_columns[index_btn].classList.toggle('hide');
+        inputs[index_btn].classList.toggle('hide');
+
+        [...btn.childNodes].find(item => item.nodeName === 'IMG').src = open ? './images/check.svg' : './images/pencil.svg';
+        [...btn.childNodes].find(item => item.nodeName === 'IMG').alt = open ? 'check' : 'pencil';
+
+        btn.classList.toggle('blue-btn');
+
+        if (!open) {
+          if (inputs[index_btn].value) {
+            columns[index_btn].title = inputs[index_btn].value;
+
+            saveInLocalStorage('columns', JSON.stringify(columns));
+            executeAllControlFunctions();
+          } else {
+            headings_columns[index_btn].classList.remove('hide');
+            inputs[index_btn].classList.add('hide');
+          }
+        }
+      });
+    });
+  }
+
+  changeTextColumns();
+
   function removeTasks() {
     const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
     const btns_remove_task = document.querySelectorAll('.wrapper__block-main-tasks-item-date-remove-task-btn');
@@ -212,8 +259,16 @@ const todoList = () => {
       const block = `
       <div class="wrapper__block">
         <header class="wrapper__block-header">
-          <h3 class="wrapper__block-header-title">${column.title}</h3>
-          <button class="wrapper__block-header-remove"></button>
+          <div class="wrapper__block-header-item">
+            <h3 class="wrapper__block-header-title">${column.title}</h3>
+            <input class="wrapper__block-header-title-change-column change-text-input hide" type="text" value="${column.title}" />
+          </div>
+          <div class="wrapper__block-header-item wrapper__block-header-settings-column hide">
+            <button class="wrapper__block-header-remove"></button>
+            <button class="wrapper__block-header-change-column-text-btn">
+              <img src="./images/pencil.svg" alt="pencil" />
+            </button>
+          </div>
         </header>
         <main class="wrapper__block-main">
           <ul class="wrapper__block-main-tasks" data-list-num="${index}"></ul>
@@ -256,7 +311,7 @@ const todoList = () => {
             </div>
             <div class="wrapper__block-main-tasks-item-block">
               <div class="wrapper__block-main-tasks-item-name ${task.check ? 'done-task' : ''}" data-column="${idx}">${task.title}</div>
-              <input class="wrapper__block-main-tasks-item-change-task-name hide" type="text" value="${task.title}" placeholder="Введите название вашей задачи" data-column="${idx}" />
+              <input class="wrapper__block-main-tasks-item-change-task-name change-text-input hide" type="text" value="${task.title}" data-column="${idx}" />
             </div>
             <div class="wrapper__block-main-tasks-item-block wrapper__block-main-tasks-item-date">
               <button class="wrapper__block-main-tasks-item-date-remove-task-btn hide" data-column="${idx}"></button>
@@ -383,6 +438,7 @@ const todoList = () => {
     showFormAddTasks();
     removeColumns();
     changeTextTasks();
+    changeTextColumns();
     removeTasks();
     dragAndDrop();
     doneTask();

@@ -346,14 +346,9 @@ template {
   font-family: 'Lato', sans-serif;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 900;
-  font-family: 'Lato', sans-serif;
+@font-face {
+  src: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap';
+  font-family: 'Montserrat', sans-serif;
 }
 
 *,
@@ -366,6 +361,16 @@ h6 {
 .wrapper__block-footer {
   font-weight: 300;
   font-family: 'Lato', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
 }
 
 *,
@@ -491,15 +496,9 @@ img {
 }
 
 .wrapper__block-header {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  display: grid;
+  grid-template-columns: 1fr .5fr;
+  grid-template-rows: 100%;
   padding: 10px;
   border-bottom: 1.5px solid #E3E7FF;
   background-color: #fff;
@@ -509,6 +508,24 @@ img {
   font-size: .8em;
   color: #6F81FF;
   opacity: .9;
+}
+
+.wrapper__block-header-change-column-text-btn {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
 }
 
 .wrapper__block-header-remove {
@@ -543,6 +560,21 @@ img {
   -webkit-transform: rotateZ(-45deg);
       -ms-transform: rotate(-45deg);
           transform: rotateZ(-45deg);
+}
+
+.wrapper__block-header-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.wrapper__block-header-settings-column {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
 .wrapper__block-main {
@@ -826,4 +858,13 @@ img {
 .blue-btn img {
   width: 70%;
   border-radius: 3px;
+}
+
+.change-text-input {
+  width: 100%;
+  height: auto;
+  border: 1px solid #c2c2c2;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 15px;
 }
