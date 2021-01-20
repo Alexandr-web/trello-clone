@@ -1,3 +1,5 @@
+import colors_theme from './colorsTheme';
+
 const todoList = () => {
   let columns = [];
 
@@ -22,7 +24,8 @@ const todoList = () => {
       if (val_column.length > 2) {
         const column = {
           title: val_column,
-          tasks: []
+          tasks: [],
+          color_theme: colors_theme.light
         }      
 
         columns.push(column);
@@ -42,6 +45,8 @@ const todoList = () => {
 
     btns.forEach((btn, index) => {
       btn.addEventListener('click', () => {
+        document.documentElement.classList.remove('dark-background');
+
         columns = columns.removeEl(index);
 
         saveInLocalStorage('columns', JSON.stringify(columns));
@@ -254,6 +259,63 @@ const todoList = () => {
 
   changeTextTasks();
 
+  function changeColorThemeColumns() {
+    columns.map((column, index_column) => {
+      const btns_change_color_theme = document.querySelectorAll('.wrapper__block-header-change-color-theme-column-btn');
+      const columns_blocks = document.querySelectorAll('.wrapper__block');
+      const color_theme_blocks = document.querySelectorAll('.wrapper__block-color-theme');
+      const btn_close_color_theme = document.querySelectorAll('.wrapper__block-color-theme-btn');
+      const colors_items = document.querySelectorAll(`.wrapper__block-color-theme-list[data-column="${index_column}"] li`);
+  
+      const hideAllColumns = () => columns_blocks.forEach(column => column.style.zIndex = '-1');
+      const showActiveColumn = index => columns_blocks[index].style.zIndex = '99999';
+  
+      const hideAllColors = () => colors_items.forEach(item => item.classList.remove('active-color'));
+      const showActiveColor = index => colors_items[index].classList.add('active-color');
+
+      btns_change_color_theme.forEach((btn, index_btn) => {
+        btn.addEventListener('click', () => {
+          document.documentElement.classList.add('dark-background');
+          color_theme_blocks[index_btn].style.zIndex = '1';
+          
+          hideAllColumns();
+          showActiveColumn(index_btn);
+  
+          colors_items.forEach((color, index_color) => {
+            const data = color.dataset.colorTheme;
+            
+            color.addEventListener('click', () => {
+              hideAllColors();
+              showActiveColor(index_color);
+
+              for (let i in colors_theme) {
+                if (data === i) {
+                  columns[index_btn].color_theme = colors_theme[i];
+                }
+              }
+            });
+
+            for (let i in colors_theme) {
+              if (data === i && colors_theme[i].background === columns[index_btn].color_theme.background) {
+                color.classList.add('active-color');
+              }
+            }
+          });
+
+          btn_close_color_theme[index_btn].addEventListener('click', () => {
+            document.documentElement.classList.remove('dark-background');
+            color_theme_blocks[index_btn].style.zIndex = '-1';
+            columns_blocks.forEach(column => column.style.zIndex = '0');
+            saveInLocalStorage('columns', JSON.stringify(columns));
+            executeAllControlFunctions();
+          });
+        });
+      });
+    });
+  }
+
+  changeColorThemeColumns();
+
   function createColumnsBlock() {
     const list = document.querySelector('.wrapper__blocks');
 
@@ -262,22 +324,25 @@ const todoList = () => {
     columns.map((column, index) => {
       const block = `
       <div class="wrapper__block">
-        <header class="wrapper__block-header">
+        <header class="wrapper__block-header" style="background: ${column.color_theme.background}; border-bottom: 1.5px solid ${column.color_theme.border};">
           <div class="wrapper__block-header-item">
             <h3 class="wrapper__block-header-title">${column.title}</h3>
             <input class="wrapper__block-header-title-change-column change-text-input hide" type="text" value="${column.title}" />
           </div>
           <div class="wrapper__block-header-item wrapper__block-header-settings-column hide">
             <button class="wrapper__block-header-remove"></button>
+            <button class="wrapper__block-header-change-color-theme-column-btn">
+              <img src="./images/palette.svg" alt="palette"></img>
+            </button>
             <button class="wrapper__block-header-change-column-text-btn">
               <img src="./images/pencil.svg" alt="pencil" />
             </button>
           </div>
         </header>
-        <main class="wrapper__block-main">
+        <main class="wrapper__block-main" style="background: ${column.color_theme.background}; border-bottom: 1.5px solid ${column.color_theme.border};">
           <ul class="wrapper__block-main-tasks" data-list-num="${index}"></ul>
         </main>
-        <footer class="wrapper__block-footer">
+        <footer class="wrapper__block-footer" style="background: ${column.color_theme.background}; border-top: 1.5px solid ${column.color_theme.border};">
           <div class="wrapper__block-footer-total-tasks">
             ${setSizeTasks(index)}
           </div>
@@ -285,15 +350,32 @@ const todoList = () => {
             <button class="wrapper__block-footer-add-new-task-btn">Добавить новую задачу</button>
           </div>
         </footer>
-        <div class="wrapper__block-form hide">
+        <div class="wrapper__block-form hide" style="background: ${column.color_theme.background}">
           <input class="wrapper__block-form-task-name form-text" type="text" placeholder="Название задачи">
           <button class="wrapper__block-form-task-btn form-btn" data-form-btn="add">Добавить задачу</button>
           <button class="wrapper__block-form-task-btn form-btn form-btn-cancel" data-form-btn="cancel">Отмена</button>
+        </div>
+        <div class="wrapper__block-color-theme" style="background: ${column.color_theme.background};">
+          <h2 class="wrapper__block-color-theme-heading">Выберите задний фон столбца: "${column.title}"</h2>
+          <ul class="wrapper__block-color-theme-list" data-column="${index}"></ul>
+          <button class="wrapper__block-color-theme-btn blue-btn">
+            <img src="./images/check.svg" alt="check" />
+          </button>
         </div>
       </div>
       `;
 
       list.innerHTML += block;
+    });
+
+    const lists_colors_theme = document.querySelectorAll('.wrapper__block-color-theme-list');
+
+    lists_colors_theme.forEach(list => {
+      for (let i in colors_theme) {
+        const item = `<li class="wrapper__block-color-theme-list-item" data-color-theme="${i}" style="background: ${colors_theme[i].background}; border: 1px solid ${colors_theme[i].border}"></li>`;
+
+        list.innerHTML += item;
+      }
     });
 
     createTasksBlock();
@@ -311,7 +393,7 @@ const todoList = () => {
           <label for="checkbox-${idx}-${index}">
             <div class="wrapper__block-main-tasks-item-block">
               <input class="wrapper__block-main-tasks-item-checkbox" type="checkbox" id="checkbox-${idx}-${index}" ${task.check ? 'checked' : ''} data-column="${idx}" />
-              <span class="wrapper__block-main-tasks-item-check"></span>
+              <span class="wrapper__block-main-tasks-item-check" style="border: 1px solid ${column.color_theme.border}"></span>
             </div>
             <div class="wrapper__block-main-tasks-item-block">
               <div class="wrapper__block-main-tasks-item-name ${task.check ? 'done-task' : ''}" data-column="${idx}">${task.title}</div>
@@ -441,6 +523,7 @@ const todoList = () => {
     addTasks();
     showFormAddTasks();
     removeColumns();
+    changeColorThemeColumns();
     changeTextTasks();
     changeTextColumns();
     removeTasks();
