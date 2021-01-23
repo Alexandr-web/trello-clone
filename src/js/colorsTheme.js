@@ -22,5 +22,5 @@ export default {
   pale_yellow: {
     background: '#F7BD7F',
     border: '#F79E3F'
-  }
+  },
 };

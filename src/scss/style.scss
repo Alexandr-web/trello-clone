@@ -72,7 +72,6 @@ img {
 
 .wrapper {
   padding: 50px 0;
-  position: relative;
   &__content {
     display: flex;
     flex-wrap: wrap;
@@ -141,7 +140,7 @@ img {
     padding-bottom: 50px;
     &::-webkit-scrollbar {
       background: rgba(255, 255, 255, .5);
-      height: 3px;
+      height: 8px;
     }
     &::-webkit-scrollbar-thumb {
       border-radius: 3px;
@@ -225,7 +224,7 @@ img {
     &-add-column {
       width: 350px;
       min-height: 120px;
-      background-color: #fff;
+      background-color: rgba(255, 255, 255, .8);
       padding: 10px;
       border-radius: 3px;
       display: flex;

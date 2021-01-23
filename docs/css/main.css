@@ -405,7 +405,6 @@ img {
 
 .wrapper {
   padding: 50px 0;
-  position: relative;
 }
 
 .wrapper__content {
@@ -498,7 +497,7 @@ img {
 
 .wrapper__blocks::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.5);
-  height: 3px;
+  height: 8px;
 }
 
 .wrapper__blocks::-webkit-scrollbar-thumb {
@@ -611,7 +610,7 @@ img {
 .wrapper__block-add-column {
   width: 350px;
   min-height: 120px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 10px;
   border-radius: 3px;
   display: -webkit-box;
