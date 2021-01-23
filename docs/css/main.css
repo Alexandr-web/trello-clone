@@ -955,9 +955,14 @@ img {
   background: #6F81FF;
 }
 
-@media (max-width: 410px) {
-  .wrapper__block {
+@media (max-width: 580px) {
+  .wrapper__navbar {
     width: 100%;
+  }
+  .wrapper__navbar-list {
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
   }
 }
 

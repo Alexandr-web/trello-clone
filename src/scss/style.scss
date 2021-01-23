@@ -482,10 +482,13 @@ img {
   background: $main-color;
 }
 
-@media (max-width: 410px) {
+@media (max-width: 580px) {
   .wrapper {
-    &__block {
+    &__navbar {
       width: 100%;
+      &-list {
+        justify-content: center;
+      }
     }
   }
 }
