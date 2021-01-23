@@ -1,7 +1,14 @@
 import colors_theme from './colorsTheme';
+import colors_page from './colorsPage';
 
 const todoList = () => {
   let columns = [];
+  let color_page = colors_page['black-dark'].background;
+
+  if (localStorage.getItem('color_page')) {
+    color_page = JSON.parse(localStorage.getItem('color_page'));
+    document.body.style.background = color_page;
+  }
 
   if (localStorage.getItem('columns')) {
     columns = JSON.parse(localStorage.getItem('columns'));
@@ -32,6 +39,8 @@ const todoList = () => {
 
         saveInLocalStorage('columns', JSON.stringify(columns));
         executeAllControlFunctions();
+
+        column_name.value = '';
       }
     });
   
@@ -220,6 +229,50 @@ const todoList = () => {
   }
 
   removeTasks();
+
+  function choiceBackgroundToPage() {
+    const list = document.querySelector('.wrapper__navbar-list');
+    const block = document.querySelector('.wrapper__navbar');
+    const btn_close = document.querySelector('.wrapper__navbar-heading-close');
+    const btn_open = document.querySelector('.wrapper__block-btn-bg-page');
+
+    const createBlocksOfColors = () => {
+      for (let i in colors_page) {
+        const item = `<li class="wrapper__navbar-list-item ${color_page === colors_page[i].background ? 'active-color' : ''}" data-color-page="${i}" style="background: ${colors_page[i].background}; border: 1px solid ${colors_page[i].border}"></li>`;
+
+        list.innerHTML += item;
+      }
+    }
+
+    createBlocksOfColors();
+
+    btn_close.addEventListener('click', () => block.classList.add('hide'));
+    btn_open.addEventListener('click', () => block.classList.remove('hide'));
+
+    const colors = document.querySelectorAll('.wrapper__navbar-list-item');
+
+    colors.forEach((color, index_color) => {
+      const hideAllColors = () => colors.forEach(item => item.classList.remove('active-color'));
+      const showActiveColor = num => colors[num].classList.add('active-color');
+
+      color.addEventListener('click', () => {
+        const data_color = color.dataset.colorPage;
+
+        hideAllColors();
+        showActiveColor(index_color);
+
+        for (let i in colors_page) {
+          if (i === data_color) {
+            color_page = colors_page[i].background;
+            document.body.style.background = color_page;
+            saveInLocalStorage('color_page', JSON.stringify(color_page));
+          }
+        }
+      });
+    });
+  }
+
+  choiceBackgroundToPage();
 
   function changeTextTasks() {
     columns.map((column, index_column) => {
@@ -418,12 +471,20 @@ const todoList = () => {
   function dragAndDrop() {
     const tasks = document.querySelectorAll('.wrapper__block-main-tasks-item');
     const list_task = document.querySelectorAll('.wrapper__block-main-tasks');
+    const settings_blocks = document.querySelectorAll('.wrapper__block-header-settings-column');
 
     tasks.forEach(task => {
       task.draggable = true;
       
-      task.addEventListener('dragstart', () => setTimeout(() => task.classList.add('selected-task'), 0));
-      task.addEventListener('dragend', () => task.classList.remove('selected-task'));
+      task.addEventListener('dragstart', () => {
+        setTimeout(() => task.classList.add('selected-task'), 0);
+        settings_blocks.forEach(item => item.classList.add('hide'));
+      });
+
+      task.addEventListener('dragend', () => {
+        task.classList.remove('selected-task');
+        settings_blocks.forEach(item => item.classList.add('hide'));
+      });
     });
 
     list_task.forEach(list => {
@@ -433,11 +494,9 @@ const todoList = () => {
 
       list.addEventListener('drop', () => {
         const el = document.querySelector('.selected-task');
-        
-        setInfoOfTasks(+list.dataset.listNum, el);
-      
-        list.append(el);
 
+        setInfoOfTasks(+list.dataset.listNum, el);
+        list.append(el);
         executeAllControlFunctions();
       });
     });
@@ -448,7 +507,7 @@ const todoList = () => {
   function setInfoOfTasks(drop_zone_num, element) {
     if (element) {
       const el = columns[+element.dataset.column].tasks[+element.dataset.numTask];
-    
+
       columns.map((column, index_column) => {
         if (!column.tasks.find(task => task.id === el.id)) {
           return;
